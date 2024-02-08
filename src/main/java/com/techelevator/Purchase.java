@@ -1,5 +1,6 @@
 package com.techelevator;
 
+import java.lang.invoke.VarHandle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,27 +11,33 @@ public class Purchase {
     private double currentBalance;
 
 
-    public void feedMoney() {
+    public double feedMoney(String depositedString) {
 
         double depositedMoney = 0;
 
         do {
-            System.out.println("Please enter amount in dollars to add: ");
-            String depositedString = userInput.nextLine();
+
             try {
                 depositedMoney = Double.parseDouble(depositedString);
             }
             catch (NumberFormatException e) {
                 System.out.println("Invalid amount please make it a number in dollars.");
+                 System.out.println("Please enter amount in dollars to add: ");
+                 depositedString = userInput.nextLine();
                 continue;
             }
             if(depositedMoney <= 0) {
                 System.out.println("Money is less than 0 please enter valid amount.");
+                 System.out.println("Please enter amount in dollars to add: ");
+                 depositedString = userInput.nextLine();
+
             }
         }
         while (depositedMoney <= 0);
 
         currentBalance += depositedMoney;
+
+        return currentBalance;
     }
 
     public void selectProduct() {

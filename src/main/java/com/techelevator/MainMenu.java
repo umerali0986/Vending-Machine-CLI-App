@@ -34,6 +34,7 @@ public class MainMenu {
             }
             else if(userInputNumber == 2){
                 purchaseMenu();
+                continue;
             } else if (userInputNumber == 3) {
                 System.exit(1);
             }
@@ -47,12 +48,13 @@ public class MainMenu {
     public void purchaseMenu(){
        Purchase purchase = new Purchase();
 
-      //System.out.println("Current Money Provided: $" + purchase.getCurrentBalance());
+        //System.out.println("Current Money Provided: $" + purchase.getCurrentBalance());
         System.out.println();
         System.out.println("(1) Feed Money");
         System.out.println("(2) Select Product");
         System.out.println("(3) Finish Transaction");
         System.out.println();
+
         int userInputNumber = 0;
 
         do{
@@ -65,21 +67,24 @@ public class MainMenu {
                 continue;
             }
             if(userInputNumber == 1){
-                purchase.feedMoney();
-                continue;
+                System.out.println("Please enter amount in dollars to add: ");
+                String depositedString = userInput.nextLine();
+                purchase.feedMoney(depositedString);
+                userInputNumber = 0;
             }
-            else if(userInputNumber == 2){
+             else if(userInputNumber == 2){
                 purchase.selectProduct();
-                continue;
+                userInputNumber = 0;
             }
             else if (userInputNumber == 3) {
                 purchase.finishTransaction();
-                System.out.println("Finish Transaction Runs");
-                continue;
+                System.out.println();
+               run();
             }
             else {
                 System.out.println("Is invalid command, please enter a valid command :");
             }
+
         }while((userInputNumber < 1) || userInputNumber > 3);
     }
 }
