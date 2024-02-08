@@ -34,7 +34,6 @@ public class MainMenu {
             }
             else if(userInputNumber == 2){
                 purchaseMenu();
-                System.out.println("Purchase menu runs");
             } else if (userInputNumber == 3) {
                 System.exit(1);
             }
@@ -46,8 +45,7 @@ public class MainMenu {
 
 
     public void purchaseMenu(){
-        //TODO- create Purchase class
-     //  Purchase purchase = new Purchase();
+       Purchase purchase = new Purchase();
 
       //System.out.println("Current Money Provided: $" + purchase.getCurrentBalance());
         System.out.println();
@@ -67,18 +65,19 @@ public class MainMenu {
                 continue;
             }
             if(userInputNumber == 1){
-              // purchase.feedMoney();
-                System.out.println("Feed Money runs");
+                purchase.feedMoney();
+                continue;
             }
             else if(userInputNumber == 2){
-             // purchase.selectProduct();
-                System.out.println("Select Product Runs");
+                purchase.selectProduct();
+                continue;
             }
             else if (userInputNumber == 3) {
-             // purchase.finishTransaction();
+                purchase.finishTransaction();
                 System.out.println("Finish Transaction Runs");
+                continue;
             }
-            if((userInputNumber < 1) || userInputNumber > 3){
+            else {
                 System.out.println("Is invalid command, please enter a valid command :");
             }
         }while((userInputNumber < 1) || userInputNumber > 3);
