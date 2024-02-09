@@ -1,7 +1,6 @@
 package com.techelevator;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.invoke.VarHandle;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,10 +13,11 @@ public class Purchase {
     private List<Item> items = new ArrayList<>();
     private Transaction transaction = new Transaction();
     private double currentBalance;
-     private File file;
+    private File file;
+
     public Purchase(){
         // create file object
-        String fileName ="Sales_Report_" + getCurrentDate() + "_" + getCurrentTime() + ".log";
+        String fileName = "Sales_Report_" + getCurrentDate() + "_" + getCurrentTime() + ".log";
         file = new File(fileName);
         if(!file.exists()){
             try{
@@ -28,6 +28,16 @@ public class Purchase {
         } else if (file.isDirectory()) {
             System.out.println("It's directory not a file.");
         }
+        VendingMachine vendingMachine = new VendingMachine();
+        try(PrintWriter printWriter = new PrintWriter(new FileOutputStream(file, true))) {
+            for(Item item : vendingMachine.getItems()) {
+                printWriter.println(item.getName() + ", "  + 0);
+            }
+        }
+        catch(FileNotFoundException e) {
+
+        }
+
     }
 
 
