@@ -112,8 +112,8 @@ public class Purchase {
             }
         }
         if(!isItemExists) {
-            System.out.println("Invalid slot code. ");
-            returnValue = "Invalid slot code. ";
+            System.out.println("Invalid slot code.");
+            returnValue = "Invalid slot code.";
         }
         return returnValue;
     }
@@ -124,7 +124,7 @@ public class Purchase {
         }
         currentBalance -= item.getPrice();
         item.setQuantity(item.getQuantity() - 1);
-        String message = item.getName() + " | $" + String.format("%.2f", item.getPrice()) + "| $" + String.format("%.2f", currentBalance);
+        String message = item.getName() + " | $" + String.format("%.2f", item.getPrice()) + " | $" + String.format("%.2f", currentBalance);
 
         transaction.addTransaction(item.getName() + " " + item.getSlot(), item.getPrice(), currentBalance);
         salesReport.addSale(item, salesReportMap);
@@ -153,7 +153,6 @@ public class Purchase {
         }
         System.out.println(returnValue);
         transaction.addTransaction("GIVE CHANGE",currentBalance,0.0);
-
         currentBalance = 0;
         return  returnValue;
     }
@@ -163,6 +162,9 @@ public class Purchase {
 
     public double getCurrentBalance() {
         return currentBalance;
+    }
+    public void setCurrentBalance(double currentBalance) {
+        this.currentBalance = currentBalance;
     }
 
 

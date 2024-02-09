@@ -11,7 +11,7 @@ public class SalesReport {
 
 
 
-    public void addSale(Item item, Map<String, Integer> map) {
+    public Map<String, Integer> addSale(Item item, Map<String, Integer> map) {
 
         for(String key : map.keySet()) {
 
@@ -21,6 +21,7 @@ public class SalesReport {
                 map.put(key, newQuantity);
             }
         }
+        return map;
 //        for(Map.Entry<String, Integer> maps : map.entrySet()) {
 //            System.out.println(maps);
 //        }

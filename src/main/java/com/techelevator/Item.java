@@ -9,8 +9,17 @@ public class Item {
     private int quantity = 5;
     private Animal animal;
 
+    public Item() {
 
+    }
 
+    public Item(String name, String slot, double price, int quantity, Animal animal) {
+        this.name = name;
+        this.slot = slot;
+        this.price = price;
+        this.quantity = quantity;
+        this.animal = animal;
+    }
 
     @Override
     public String toString(){
