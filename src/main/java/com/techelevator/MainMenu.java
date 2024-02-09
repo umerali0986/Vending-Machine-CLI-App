@@ -8,7 +8,13 @@ public class MainMenu {
     private VendingMachine vendingMachine = new VendingMachine();
     private Scanner userInput = new Scanner(System.in);
     private List<Item> items = vendingMachine.getItems();
-    private Purchase purchase = new Purchase();
+    private Purchase purchase;
+
+    public MainMenu(){
+        purchase = new Purchase();
+    }
+
+
     public void run(){
 
         // prompt a user with main menu options:
@@ -77,6 +83,7 @@ public class MainMenu {
             }
              else if(userInputNumber == 2){
                 purchase.selectProduct(items);
+                // purchase.dispensing(file);
                 userInputNumber = 0;
             }
             else if (userInputNumber == 3) {

@@ -1,14 +1,34 @@
 package com.techelevator;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.VarHandle;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 public class Purchase {
     private Scanner userInput = new Scanner(System.in);
     private List<Item> items = new ArrayList<>();
+    private Transaction transaction = new Transaction();
     private double currentBalance;
+     private File file;
+    public Purchase(){
+        // create file object
+        String fileName ="Sales_Report_" + getCurrentDate() + "_" + getCurrentTime() + ".log";
+        file = new File(fileName);
+        if(!file.exists()){
+            try{
+                file.createNewFile();
+            }catch (IOException e){
+                System.out.println(e.getMessage());
+            }
+        } else if (file.isDirectory()) {
+            System.out.println("It's directory not a file.");
+        }
+    }
 
 
     public double feedMoney(String depositedString) {
@@ -37,6 +57,8 @@ public class Purchase {
 
         currentBalance += depositedMoney;
 
+
+        transaction.addTransaction("FEED MONEY",depositedMoney,currentBalance);
         return currentBalance;
     }
 
@@ -77,7 +99,8 @@ public class Purchase {
         currentBalance -= item.getPrice();
         item.setQuantity(item.getQuantity() - 1);
         String message = item.getName() + " | $" + String.format("%.2f", item.getPrice()) + "| $" + String.format("%.2f", currentBalance);
-//        System.out.println();
+
+       transaction.addTransaction(item.getName() + " " + item.getSlot(), item.getPrice(), currentBalance);
 
         return message + " | " + item.getAnimal().makeASound();
     }
@@ -99,14 +122,34 @@ public class Purchase {
             }
 
         }
+
+        transaction.addTransaction("GIVE CHANGE",currentBalance,0.0);
+
         currentBalance = 0;
+
     }
 
     public double getCurrentBalance() {
-        // TODO format decimal
         return currentBalance;
     }
 
 
+    public String getCurrentDate(){
 
+        String pattern = "MM-dd-YYYY";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date date = new Date();
+        String currentDate = simpleDateFormat.format(date);
+
+        return currentDate;
+    }
+
+    public String getCurrentTime(){
+        String pattern = "hh-mm-ss-a";
+        SimpleDateFormat timeFormat = new SimpleDateFormat(pattern);
+        Date date = new Date();
+        String currentTime = timeFormat.format(date);
+
+        return currentTime;
+    }
 }
