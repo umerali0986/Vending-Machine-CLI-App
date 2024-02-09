@@ -15,8 +15,8 @@ public class Item {
     @Override
     public String toString(){
 
-        return "Slot = " + getSlot() + ", Name = " + getName() + ", Price = " + getPrice() + ", Type =" +  getAnimal().getSpecies()
-                + (isSoldOut() ? "Sold out " : ", Quantity = " + getQuantity());
+        return "Slot = " + getSlot() + ", Name = " + getName() + ", Price = " + String.format("%.2f", getPrice()) + ", Type = " +  getAnimal().getSpecies()
+                + (isSoldOut() ? ", Sold out " : ", Quantity = " + getQuantity());
     }
 
     // getters and setters

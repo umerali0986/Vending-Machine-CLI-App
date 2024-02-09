@@ -40,13 +40,71 @@ public class Purchase {
         return currentBalance;
     }
 
-    public void selectProduct() {
-        System.out.println("Select money is running");
+    public void selectProduct(List<Item> items) {
+
+        for(Item item : items) {
+            System.out.println(item.toString());
+        }
+        System.out.println();
+        System.out.println("Please enter slot number: ");
+        String slotNumber = userInput.nextLine();
+        boolean isItemExists = false;
+
+        for(Item item : items) {
+            if(item.getSlot().equalsIgnoreCase(slotNumber)) {
+                isItemExists = true;
+                if(item.isSoldOut()) {
+                    System.out.println(item.getName() + " is sold out.");
+                    break;
+                }
+                else {
+                    System.out.println(dispenseItem(item));
+                    break;
+                }
+            }
+        }
+        if(!isItemExists) {
+            System.out.println("Invalid slot code. ");
+        }
+
 
     }
 
+    public String dispenseItem(Item item) {
+        if(getCurrentBalance() < item.getPrice()) {
+            return "Insufficient funds.";
+        }
+        currentBalance -= item.getPrice();
+        item.setQuantity(item.getQuantity() - 1);
+        String message = item.getName() + " | $" + String.format("%.2f", item.getPrice()) + "| $" + String.format("%.2f", currentBalance);
+//        System.out.println();
+
+        return message + " | " + item.getAnimal().makeASound();
+    }
+
     public void finishTransaction() {
-        System.out.println("Finish transaction is running");
+        double[] changeAmounts = {0.25, 0.10, 0.05, 0.01};
+        int[] amountCount = new int[changeAmounts.length];
+        double changeRequired = currentBalance;
+        for (int i = 0; i < changeAmounts.length; i++) {
+            while (changeRequired >= changeAmounts[i]) {
+                changeRequired -= changeAmounts[i];
+                amountCount[i]++;
+            }
+        }
+        System.out.println();
+        for (int i = 0; i < changeAmounts.length; i++) {
+            if (amountCount[i] > 0) {
+                System.out.println(amountCount[i] + " $" + (String.format("%.2f", changeAmounts[i])));
+            }
+
+        }
+        currentBalance = 0;
+    }
+
+    public double getCurrentBalance() {
+        // TODO format decimal
+        return currentBalance;
     }
 
 

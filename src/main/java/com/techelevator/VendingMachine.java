@@ -9,15 +9,18 @@ import java.util.Scanner;
 public class VendingMachine {
 
     private List<Item> items = new ArrayList<>();
-
-    public void run(){
+    public List<Item> run(){
 
         for(Item item : getItems()){
             System.out.println(item.toString());
         }
+        return getItems();
     }
 
+
+
     public List<Item> getItems(){
+
         File file = new File("vendingmachine.csv");
         if(!file.exists()){
             System.out.println(file.getName() + " doesn't exists.");
