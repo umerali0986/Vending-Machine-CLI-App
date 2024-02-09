@@ -1,7 +1,12 @@
 package com.techelevator;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MainMenu {
@@ -9,6 +14,7 @@ public class MainMenu {
     private Scanner userInput = new Scanner(System.in);
     private List<Item> items = vendingMachine.getItems();
     private Purchase purchase;
+
 
     public MainMenu(){
         purchase = new Purchase();
@@ -45,13 +51,25 @@ public class MainMenu {
             else if(userInputNumber == 2){
                 purchaseMenu();
                 continue;
-            } else if (userInputNumber == 3) {
+            }
+            else if (userInputNumber == 3) {
+                //TODO create SalesReport file using Map of <String, Integer> before closing app
+                 createSalesReportFile();
                 System.exit(1);
             }
+            else if(userInputNumber == 4) {
+                Map<String, Integer> salesMap = purchase.getSalesReportMap();
+                for(String key : salesMap.keySet()) {
+                    System.out.println(key + "," + salesMap.get(key));
+                }
+                System.out.println();
+                System.out.println("Total Sales $" + String.format("%.2f", purchase.getTotalSales()));
+                userInputNumber = 0;
+             }
             else {
                 System.out.println("Is invalid command, please enter a valid command oo:");
             }
-        }while((userInputNumber < 1) || userInputNumber > 3);
+        }while((userInputNumber < 1) || userInputNumber > 4);
     }
 
 
@@ -82,12 +100,17 @@ public class MainMenu {
                 userInputNumber = 0;
             }
              else if(userInputNumber == 2){
-                purchase.selectProduct(items);
-                // purchase.dispensing(file);
+                for(Item item : items) {
+                    System.out.println(item.toString());
+                }
+                 System.out.println();
+                 System.out.println("Please enter slot number: ");
+                 String slotNumber = userInput.nextLine();
+                 purchase.selectProduct(items, slotNumber);
                 userInputNumber = 0;
             }
             else if (userInputNumber == 3) {
-                purchase.finishTransaction();
+                purchase.finishTransaction(purchase.getCurrentBalance());
                 System.out.println();
                run();
             }
@@ -95,6 +118,32 @@ public class MainMenu {
                 System.out.println("Is invalid command, please enter a valid command :");
             }
 
-        }while((userInputNumber < 1) || userInputNumber > 3);
+        }
+        while((userInputNumber < 1) || userInputNumber > 3);
+    }
+
+    public File createSalesReportFile() {
+        File file = new File("Sales_Report_" + purchase.getCurrentDate() + "_" + purchase.getCurrentTime());
+
+        if(!file.exists()) {
+            try{
+                file.createNewFile();
+            }
+            catch(IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        try(PrintWriter printWriter = new PrintWriter(new FileOutputStream(file, true))) {
+            for(String key : purchase.getSalesReportMap().keySet()) {
+                printWriter.println(key + "," + purchase.getSalesReportMap().get(key));
+            }
+            printWriter.println();
+            printWriter.println();
+            printWriter.println("TOTAL SALES $" + String.format("%.2f", purchase.getTotalSales()));
+        }
+        catch(IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return file;
     }
 }

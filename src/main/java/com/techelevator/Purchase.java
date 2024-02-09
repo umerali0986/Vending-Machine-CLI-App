@@ -3,57 +3,73 @@ package com.techelevator;
 import java.io.*;
 import java.lang.invoke.VarHandle;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Purchase {
     private Scanner userInput = new Scanner(System.in);
     private List<Item> items = new ArrayList<>();
     private Transaction transaction = new Transaction();
     private double currentBalance;
-    private File file;
+    //private File file;
+    private Map<String, Integer> salesReportMap = new HashMap<>();
+    private SalesReport salesReport = new SalesReport();
+    private double totalSales = 0.00;
 
-    public Purchase(){
-        // create file object
-        String fileName = "Sales_Report_" + getCurrentDate() + "_" + getCurrentTime() + ".log";
-        file = new File(fileName);
-        if(!file.exists()){
-            try{
-                file.createNewFile();
-            }catch (IOException e){
-                System.out.println(e.getMessage());
-            }
-        } else if (file.isDirectory()) {
-            System.out.println("It's directory not a file.");
-        }
+    public Purchase() {
         VendingMachine vendingMachine = new VendingMachine();
-        try(PrintWriter printWriter = new PrintWriter(new FileOutputStream(file, true))) {
-            for(Item item : vendingMachine.getItems()) {
-                printWriter.println(item.getName() + ", "  + 0);
-            }
+        for(Item item : vendingMachine.getItems()) {
+            salesReportMap.put(item.getName(), 0);
         }
-        catch(FileNotFoundException e) {
-
-        }
-
+//        for(Map.Entry<String, Integer> map : mapFile.entrySet()) {
+//            System.out.println(map);
+//        }
     }
+
+    public Map<String, Integer> getSalesReportMap() {
+        return salesReportMap;
+    }
+
+//    public Purchase(){
+//        // create file object
+//        String fileName = "Sales_Report_" + getCurrentDate() + "_" + getCurrentTime() + ".log";
+//        file = new File(fileName);
+//        if(!file.exists()){
+//            try{
+//                file.createNewFile();
+//            }catch (IOException e){
+//                System.out.println(e.getMessage());
+//            }
+//        } else if (file.isDirectory()) {
+//            System.out.println("It's directory not a file.");
+//        }
+//        VendingMachine vendingMachine = new VendingMachine();
+//        try(PrintWriter printWriter = new PrintWriter(new FileOutputStream(file, true))) {
+//            for(Item item : vendingMachine.getItems()) {
+//                printWriter.println(item.getName() + ", "  + 0);
+//            }
+//            printWriter.println();
+//            printWriter.println("TOTAL SALES: $0.00");
+//        }
+//        catch(FileNotFoundException e) {
+//
+//        }
+//
+//    }
 
 
     public double feedMoney(String depositedString) {
 
-        double depositedMoney = 0;
+        int depositedMoney = 0;
 
         do {
 
             try {
-                depositedMoney = Double.parseDouble(depositedString);
+                depositedMoney = Integer.parseInt(depositedString);
             }
             catch (NumberFormatException e) {
                 System.out.println("Invalid amount please make it a number in dollars.");
-                 System.out.println("Please enter amount in dollars to add: ");
-                 depositedString = userInput.nextLine();
+                System.out.print("Please enter amount in dollars to add: ");
+                depositedString = userInput.nextLine();
                 continue;
             }
             if(depositedMoney <= 0) {
@@ -72,14 +88,12 @@ public class Purchase {
         return currentBalance;
     }
 
-    public void selectProduct(List<Item> items) {
+    public String selectProduct(List<Item> items, String slotNumber ) {
+        String returnValue = "";
 
-        for(Item item : items) {
-            System.out.println(item.toString());
-        }
-        System.out.println();
-        System.out.println("Please enter slot number: ");
-        String slotNumber = userInput.nextLine();
+//        for(Item item : items) {
+//            System.out.println(item.toString());
+//        }
         boolean isItemExists = false;
 
         for(Item item : items) {
@@ -87,19 +101,21 @@ public class Purchase {
                 isItemExists = true;
                 if(item.isSoldOut()) {
                     System.out.println(item.getName() + " is sold out.");
+                    returnValue = item.getName() + " is sold out.";
                     break;
                 }
                 else {
-                    System.out.println(dispenseItem(item));
+                    returnValue = dispenseItem(item);
+                    System.out.println(returnValue);
                     break;
                 }
             }
         }
         if(!isItemExists) {
             System.out.println("Invalid slot code. ");
+            returnValue = "Invalid slot code. ";
         }
-
-
+        return returnValue;
     }
 
     public String dispenseItem(Item item) {
@@ -110,15 +126,18 @@ public class Purchase {
         item.setQuantity(item.getQuantity() - 1);
         String message = item.getName() + " | $" + String.format("%.2f", item.getPrice()) + "| $" + String.format("%.2f", currentBalance);
 
-       transaction.addTransaction(item.getName() + " " + item.getSlot(), item.getPrice(), currentBalance);
+        transaction.addTransaction(item.getName() + " " + item.getSlot(), item.getPrice(), currentBalance);
+        salesReport.addSale(item, salesReportMap);
+        totalSales += item.getPrice();
 
         return message + " | " + item.getAnimal().makeASound();
     }
 
-    public void finishTransaction() {
+    public String finishTransaction(double currentBalance) {
         double[] changeAmounts = {0.25, 0.10, 0.05, 0.01};
         int[] amountCount = new int[changeAmounts.length];
         double changeRequired = currentBalance;
+        String returnValue = "";
         for (int i = 0; i < changeAmounts.length; i++) {
             while (changeRequired >= changeAmounts[i]) {
                 changeRequired -= changeAmounts[i];
@@ -129,14 +148,17 @@ public class Purchase {
         for (int i = 0; i < changeAmounts.length; i++) {
             if (amountCount[i] > 0) {
                 System.out.println(amountCount[i] + " $" + (String.format("%.2f", changeAmounts[i])));
+                returnValue +=  amountCount[i] + " $" + String.format("%.2f", changeAmounts[i]);
             }
-
         }
-
+        System.out.println(returnValue);
         transaction.addTransaction("GIVE CHANGE",currentBalance,0.0);
 
         currentBalance = 0;
-
+        return  returnValue;
+    }
+    public double getTotalSales() {
+        return totalSales;
     }
 
     public double getCurrentBalance() {

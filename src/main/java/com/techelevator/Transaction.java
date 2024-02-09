@@ -5,10 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Transaction {
+    private File file;
 
-    public void addTransaction(String transactionName, double deposit, double currentBalance){
+    public File addTransaction(String transactionName, double deposit, double currentBalance){
 
-        File file = new File("Vending.log");
+        file = new File("Vending.log");
         if(!file.exists()){
             try{
                 file.createNewFile();
@@ -29,8 +30,12 @@ public class Transaction {
             System.out.println(e.getMessage());
             System.exit(1);
         }
+        return file;
 
+    }
 
+    public File getFile() {
+        return file;
     }
 
     public String getCurrentDate(){
