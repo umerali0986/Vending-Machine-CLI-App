@@ -94,7 +94,7 @@ public class MainMenu {
                 continue;
             }
             if(userInputNumber == 1){
-                System.out.println("Please enter amount in dollars to add: ");
+                System.out.print("Please enter amount in whole numbers to add: $");
                 String depositedString = userInput.nextLine();
                 purchase.feedMoney(depositedString);
                 userInputNumber = 0;
@@ -112,7 +112,7 @@ public class MainMenu {
             else if (userInputNumber == 3) {
                 purchase.finishTransaction(purchase.getCurrentBalance());
                 System.out.println();
-               run();
+                run();
             }
             else {
                 System.out.println("Is invalid command, please enter a valid command :");
@@ -123,7 +123,7 @@ public class MainMenu {
     }
 
     public File createSalesReportFile() {
-        File file = new File("Sales_Report_" + purchase.getCurrentDate() + "_" + purchase.getCurrentTime());
+        File file = new File("Sales_Report_" + purchase.getCurrentDate() + "_" + purchase.getCurrentTime() + ".log");
 
         if(!file.exists()) {
             try{

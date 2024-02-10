@@ -151,7 +151,6 @@ public class Purchase {
                 returnValue +=  amountCount[i] + " $" + String.format("%.2f", changeAmounts[i]);
             }
         }
-        System.out.println(returnValue);
         transaction.addTransaction("GIVE CHANGE",currentBalance,0.0);
         currentBalance = 0;
         return  returnValue;
