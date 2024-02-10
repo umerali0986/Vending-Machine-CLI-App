@@ -7,8 +7,9 @@ import java.util.Date;
 public class Transaction {
     private File file;
 
-    public File addTransaction(String transactionName, double deposit, double currentBalance){
+    public String addTransaction(String transactionName, double deposit, double currentBalance){
 
+        String returnValue = "";
         file = new File("Vending.log");
         if(!file.exists()){
             try{
@@ -21,16 +22,17 @@ public class Transaction {
         }
 
         try(PrintWriter writer = new PrintWriter(new FileOutputStream(file,true))){
+                returnValue = getCurrentDate() + " " + getCurrentTime() + " " + transactionName +
+                        ((transactionName.equals("FEED MONEY") || transactionName.equals("GIVE CHANGE")) ?  ": " : " ")
+                        + "$" + String.format("%.2f",deposit) + " $" + String.format("%.2f",currentBalance);
+            writer.println(returnValue);
 
-            writer.println(getCurrentDate() + " " + getCurrentTime() + " " + transactionName +
-                    ((transactionName.equals("FEED MONEY") || transactionName.equals("GIVE CHANGE")) ?  ": " : " ")
-                    + "$" + String.format("%.2f",deposit) + " $" + String.format("%.2f",currentBalance));
         }
         catch (FileNotFoundException e){
             System.out.println(e.getMessage());
             System.exit(1);
         }
-        return file;
+        return returnValue;
 
     }
 

@@ -1,11 +1,14 @@
 package com.techelevator;
 
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PurchaseTest {
 
     @Test
@@ -13,10 +16,16 @@ public class PurchaseTest {
         //Arrange
         Purchase purchase = new Purchase();
         String deposited = "10";
+
         //Act
         double actual = purchase.feedMoney(deposited);
         //Assert
         Assert.assertEquals(10.0, actual, 0.01);
+
+        //Act
+         actual = purchase.feedMoney(deposited);
+        //Assert
+        Assert.assertEquals(20.0, actual, 0.01);
     }
 
     @Test
