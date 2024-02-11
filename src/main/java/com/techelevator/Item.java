@@ -81,7 +81,8 @@ public class Item {
         }
     }
     public boolean isSoldOut(){
-        return quantity < 1 ? true: false;
+        return quantity < 1;
     }
+
 
 }
