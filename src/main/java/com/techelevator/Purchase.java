@@ -15,7 +15,9 @@ public class Purchase {
     private SalesReport salesReport = new SalesReport();
     private double totalSales = 0.00;
 
+
     public Purchase() {
+        //adding items to salesReportMap
         VendingMachine vendingMachine = new VendingMachine();
         for(Item item : vendingMachine.getItems()) {
             salesReportMap.put(item.getName(), 0);
@@ -62,19 +64,21 @@ public class Purchase {
         int depositedMoney = 0;
 
         do {
-
             try {
                 depositedMoney = Integer.parseInt(depositedString);
             }
             catch (NumberFormatException e) {
-                System.out.println("Invalid amount please make it a number in dollars.");
-                System.out.print("Please enter amount in dollars to add: ");
+                System.out.println("Invalid input please make it a number in dollars.");
+                System.out.println();
+                System.out.print("Please enter amount in whole numbers to add: $");
+
                 depositedString = userInput.nextLine();
                 continue;
             }
             if(depositedMoney <= 0) {
-                System.out.println("Money is less than 0 please enter valid amount.");
-                 System.out.println("Please enter amount in dollars to add: ");
+                System.out.println("Money is less than 0 please enter a positive amount in whole numbers.");
+                System.out.println();
+                System.out.println("Please enter amount in dollars to add: ");
                  depositedString = userInput.nextLine();
 
             }
@@ -83,19 +87,16 @@ public class Purchase {
 
         currentBalance += depositedMoney;
 
-
+        //calling addtransaction() to add transaction to the Vending.log file
         transaction.addTransaction("FEED MONEY",depositedMoney,currentBalance);
         return currentBalance;
     }
 
     public String selectProduct(List<Item> items, String slotNumber ) {
         String returnValue = "";
-
-//        for(Item item : items) {
-//            System.out.println(item.toString());
-//        }
         boolean isItemExists = false;
-
+        //looping through item List to check if item matches slotNumber or is sold out
+        //dispenses item if item exists or is not sold out
         for(Item item : items) {
             if(item.getSlot().equalsIgnoreCase(slotNumber)) {
                 isItemExists = true;
@@ -151,6 +152,7 @@ public class Purchase {
                 returnValue +=  amountCount[i] + " $" + String.format("%.2f", changeAmounts[i]);
             }
         }
+        //calling addtransaction to add transaction to the Vending.log file
         transaction.addTransaction("GIVE CHANGE",currentBalance,0.0);
         currentBalance = 0;
         return  returnValue;

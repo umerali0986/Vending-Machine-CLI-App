@@ -14,6 +14,7 @@ public class MainMenu {
     private Scanner userInput = new Scanner(System.in);
     private List<Item> items = vendingMachine.getItems();
     private Purchase purchase;
+    private SalesReport salesReport = new SalesReport();
 
 
     public MainMenu(){
@@ -23,7 +24,6 @@ public class MainMenu {
 
     public void run(){
 
-        // prompt a user with main menu options:
         System.out.println("******** WELCOME TO VENDING MACHINE ********");
 
         int userInputNumber = 0;
@@ -39,10 +39,11 @@ public class MainMenu {
             try {
                 userInputNumber = Integer.parseInt(userInputString);
             }catch (NumberFormatException e){
-                System.out.println("Is invalid command, please enter a valid command p");
+                System.out.println("Is invalid command, please enter a valid command");
                 continue;
             }
              if(userInputNumber == 1){
+                 //displaying all current items in vendingMachine to user;
                 for(Item item : items) {
                     System.out.println(item.toString());
                 }
@@ -53,11 +54,11 @@ public class MainMenu {
                 continue;
             }
             else if (userInputNumber == 3) {
-                //TODO create SalesReport file using Map of <String, Integer> before closing app
-                 createSalesReportFile();
+                salesReport.createSalesReportFile(purchase);
                 System.exit(1);
             }
             else if(userInputNumber == 4) {
+                //Displaying sales report information from salesReportMap to user
                 Map<String, Integer> salesMap = purchase.getSalesReportMap();
                 for(String key : salesMap.keySet()) {
                     System.out.println(key + "," + salesMap.get(key));
@@ -67,7 +68,7 @@ public class MainMenu {
                 userInputNumber = 0;
              }
             else {
-                System.out.println("Is invalid command, please enter a valid command oo:");
+                System.out.println("Is invalid command, please enter a valid command");
             }
         }while((userInputNumber < 1) || userInputNumber > 4);
     }
@@ -94,22 +95,26 @@ public class MainMenu {
                 continue;
             }
             if(userInputNumber == 1){
+                //calling feedMoney() to take user money and add to currentBalance
                 System.out.print("Please enter amount in whole numbers to add: $");
                 String depositedString = userInput.nextLine();
                 purchase.feedMoney(depositedString);
                 userInputNumber = 0;
             }
              else if(userInputNumber == 2){
+                 //displays all items in vendingMachine to user
                 for(Item item : items) {
                     System.out.println(item.toString());
                 }
                  System.out.println();
-                 System.out.println("Please enter slot number: ");
+                 System.out.print("Please enter slot number: ");
                  String slotNumber = userInput.nextLine();
+                 //calls selectProduct() to dispense item if item exists
                  purchase.selectProduct(items, slotNumber);
                 userInputNumber = 0;
             }
             else if (userInputNumber == 3) {
+                //calls finishTransaction() to return currentBalance in coins to user
                 purchase.finishTransaction(purchase.getCurrentBalance());
                 System.out.println();
                 run();
@@ -122,28 +127,4 @@ public class MainMenu {
         while((userInputNumber < 1) || userInputNumber > 3);
     }
 
-    public File createSalesReportFile() {
-        File file = new File("Sales_Report_" + purchase.getCurrentDate() + "_" + purchase.getCurrentTime() + ".log");
-
-        if(!file.exists()) {
-            try{
-                file.createNewFile();
-            }
-            catch(IOException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        try(PrintWriter printWriter = new PrintWriter(new FileOutputStream(file, true))) {
-            for(String key : purchase.getSalesReportMap().keySet()) {
-                printWriter.println(key + "," + purchase.getSalesReportMap().get(key));
-            }
-            printWriter.println();
-            printWriter.println();
-            printWriter.println("TOTAL SALES $" + String.format("%.2f", purchase.getTotalSales()));
-        }
-        catch(IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return file;
-    }
 }

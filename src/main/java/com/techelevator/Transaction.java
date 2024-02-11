@@ -8,7 +8,7 @@ public class Transaction {
     private File file;
 
     public String addTransaction(String transactionName, double deposit, double currentBalance){
-
+        //adding every transactions to Vending.log file
         String returnValue = "";
         file = new File("Vending.log");
         if(!file.exists()){
