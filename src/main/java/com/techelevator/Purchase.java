@@ -14,6 +14,7 @@ public class Purchase {
     private Map<String, Integer> salesReportMap = new HashMap<>();
     private SalesReport salesReport = new SalesReport();
     private double totalSales = 0.00;
+    private File file;
 
 
     public Purchase() {
@@ -22,41 +23,24 @@ public class Purchase {
         for(Item item : vendingMachine.getItems()) {
             salesReportMap.put(item.getName(), 0);
         }
-//        for(Map.Entry<String, Integer> map : mapFile.entrySet()) {
-//            System.out.println(map);
-//        }
+        file = new File("Vending.log");
+        if(!file.exists()){
+            try{
+                file.createNewFile();
+            }catch (IOException e){
+                System.out.println(e.getMessage());
+            }
+        } else if (file.isDirectory()) {
+            System.out.println("It's directory not a file.");
+        }
+//
     }
 
     public Map<String, Integer> getSalesReportMap() {
         return salesReportMap;
     }
 
-//    public Purchase(){
-//        // create file object
-//        String fileName = "Sales_Report_" + getCurrentDate() + "_" + getCurrentTime() + ".log";
-//        file = new File(fileName);
-//        if(!file.exists()){
-//            try{
-//                file.createNewFile();
-//            }catch (IOException e){
-//                System.out.println(e.getMessage());
-//            }
-//        } else if (file.isDirectory()) {
-//            System.out.println("It's directory not a file.");
-//        }
-//        VendingMachine vendingMachine = new VendingMachine();
-//        try(PrintWriter printWriter = new PrintWriter(new FileOutputStream(file, true))) {
-//            for(Item item : vendingMachine.getItems()) {
-//                printWriter.println(item.getName() + ", "  + 0);
-//            }
-//            printWriter.println();
-//            printWriter.println("TOTAL SALES: $0.00");
-//        }
-//        catch(FileNotFoundException e) {
 //
-//        }
-//
-//    }
 
 
     public double feedMoney(String depositedString) {
@@ -68,17 +52,23 @@ public class Purchase {
                 depositedMoney = Integer.parseInt(depositedString);
             }
             catch (NumberFormatException e) {
-                System.out.println("Invalid input please make it a number in dollars.");
+                System.out.println("Invalid input please make it a whole number in dollars.");
                 System.out.println();
                 System.out.print("Please enter amount in whole numbers to add: $");
 
                 depositedString = userInput.nextLine();
                 continue;
             }
-            if(depositedMoney <= 0) {
+            if(depositedMoney == 0) {
+                System.out.println("0 is not a valid amount please enter a positive whole number: $");
+                System.out.println();
+                System.out.print("Please enter amount in dollars to add: $");
+                depositedString = userInput.nextLine();
+            }
+            if(depositedMoney < 0) {
                 System.out.println("Money is less than 0 please enter a positive amount in whole numbers.");
                 System.out.println();
-                System.out.println("Please enter amount in dollars to add: ");
+                System.out.print("Please enter amount in dollars to add: $");
                  depositedString = userInput.nextLine();
 
             }
@@ -88,7 +78,7 @@ public class Purchase {
         currentBalance += depositedMoney;
 
         //calling addtransaction() to add transaction to the Vending.log file
-        transaction.addTransaction("FEED MONEY",depositedMoney,currentBalance);
+        transaction.addTransaction(file, "FEED MONEY",depositedMoney,currentBalance);
         return currentBalance;
     }
 
@@ -127,7 +117,7 @@ public class Purchase {
         item.setQuantity(item.getQuantity() - 1);
         String message = item.getName() + " | $" + String.format("%.2f", item.getPrice()) + " | $" + String.format("%.2f", currentBalance);
 
-        transaction.addTransaction(item.getName() + " " + item.getSlot(), item.getPrice(), currentBalance);
+        transaction.addTransaction(file, item.getName() + " " + item.getSlot(), item.getPrice(), currentBalance);
         salesReport.addSale(item, salesReportMap);
         totalSales += item.getPrice();
 
@@ -153,8 +143,8 @@ public class Purchase {
             }
         }
         //calling addtransaction to add transaction to the Vending.log file
-        transaction.addTransaction("GIVE CHANGE",currentBalance,0.0);
-        currentBalance = 0;
+        transaction.addTransaction(file, "GIVE CHANGE",currentBalance,0.0);
+        setCurrentBalance(0);
         return  returnValue;
     }
     public double getTotalSales() {

@@ -42,25 +42,5 @@ public class SalesReport {
             }
         }
         return map;
-
-
-//        for(Map.Entry<String, Integer> maps : map.entrySet()) {
-//            System.out.println(maps);
-//        }
-
-//        try(Scanner scanner = new Scanner(file) ; PrintWriter printWriter = new PrintWriter(new FileOutputStream(file, false))) {
-//            while(scanner.hasNextLine()) {
-//                String line = scanner.nextLine();
-//                String[] arrayString = line.split(", ");
-//                int quantity = Integer.parseInt(arrayString[1]);
-//                if(line.contains(item.getName())) {
-//                    line = line.replace(arrayString[1], quantity++ + "");
-//                }
-//                printWriter.println("line");
-//            }
-//        }
-//        catch(FileNotFoundException e) {
-//            System.out.println(e.getMessage());
-//        }
     }
 }

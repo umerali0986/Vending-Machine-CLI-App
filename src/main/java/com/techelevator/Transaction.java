@@ -7,19 +7,9 @@ import java.util.Date;
 public class Transaction {
     private File file;
 
-    public String addTransaction(String transactionName, double deposit, double currentBalance){
+    public String addTransaction(File file, String transactionName, double deposit, double currentBalance){
         //adding every transactions to Vending.log file
         String returnValue = "";
-        file = new File("Vending.log");
-        if(!file.exists()){
-            try{
-                file.createNewFile();
-            }catch (IOException e){
-                System.out.println(e.getMessage());
-            }
-        } else if (file.isDirectory()) {
-            System.out.println("It's directory not a file.");
-        }
 
         try(PrintWriter writer = new PrintWriter(new FileOutputStream(file,true))){
                 returnValue = getCurrentDate() + " " + getCurrentTime() + " " + transactionName +
